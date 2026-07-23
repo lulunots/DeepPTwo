@@ -1,0 +1,25 @@
+{
+  "sopa_read_ok": true,
+  "images": [
+    "morphology_mip",
+    "morphology_focus"
+  ],
+  "shapes": [
+    "nucleus_boundaries",
+    "cell_boundaries"
+  ],
+  "points": [
+    "transcripts"
+  ],
+  "tables": [
+    "table"
+  ],
+  "n_cells": 546519,
+  "n_transcripts": 14279053,
+  "pixel_size_out": 0.0003807027258740119,
+  "he_px_um": 0.00019034392297753998,
+  "residual_um": {
+    "coarse_median": 1.68236626493596,
+    "refined_median": 0.0011805063272401835
+  }
+}

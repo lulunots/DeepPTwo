@@ -1,0 +1,8 @@
+# Large binary files - not suitable for GitHub
+*.sif
+*.tif
+*.ome.tif
+
+# Large intermediate/output result directories (~8.6GB total)
+padded_result_*/
+expanded_padded_result_*/
