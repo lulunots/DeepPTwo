@@ -11,3 +11,5 @@ Benchmark pipeline for spatial transcriptomics (Xenium) and H&E image alignment/
 
 ## Notes
 Large intermediate outputs (`padded_result_*`, `expanded_padded_result_*`) and the container image (`xenium_he_pipeline.sif`) are excluded from this repo due to size — see `.gitignore`.
+
+model\_MLP.py, utils\_color\_norm.py, and utils\_preprocessing.py are unmodified files from the original DeepPT codebase (Hoang et al., Nature Cancer 2024, Zenodo record 11125591), included here for reproducibility. A US patent application (No. 63/349,829) covers the original model and code; usage here is for non-commercial academic research
