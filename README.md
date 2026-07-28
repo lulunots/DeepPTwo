@@ -1,7 +1,5 @@
 ## Scripts Overview (H&E-to-Expression Prediction Pipeline)
 
-The following scripts, covered in detail in this document, implement the DeepPT-based single-cell prediction pipeline. Image cropping/alignment scripts (e.g. `cell_cropping/`, `batch_pad.py`, `expand_and_pad.py`) belong to a separate preprocessing pipeline and are not described here.
-
 ### 1. Xenium (ST) Preprocessing
 
 | Script | Purpose |
