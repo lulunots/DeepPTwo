@@ -1,7 +1,30 @@
 ## Scripts Overview (H&E-to-Expression Prediction Pipeline)
+The following scripts, covered in detail in this document, implement the DeepPT-based single-cell prediction pipeline.
 
-### 1. Xenium (ST) Preprocessing
+### 0. H&E Image Alignment
+| Script | Purpose |
+|---|---|
+| `4851_align.sh` / `5626_align.sh` | Alignment job scripts for the two slides (4851 and 5626), producing the registered H&E images. |
+| `4851_he_alignment_qc/` / `5626_he_alignment_qc/` | QC output directories containing overlap visualisations (original, rigid, non-rigid) and a summary JSON for each slide's alignment. |
+| `Xenium_mask/` | Mask assets used during alignment (e.g. `1302A_0007311_he.pdf`). |
 
+### 1. Cell Cropping
+| Script | Purpose |
+|---|---|
+| `crop_per_cell.py` | Crops a per-cell bounding-box region (plus margin) from the registered H&E image for each cell in the Xenium boundary CSV. Skips cells whose padded crop would exceed image bounds. |
+| `cell_cropping/crop_*.sh` | Per-slide PBS job wrappers invoking `crop_per_cell.py` (one script per slide: 1480, 1956, 2556, 4851, 5626). |
+
+### 2. Cell Expanding and Padding
+| Script | Purpose |
+|---|---|
+| `expand_and_pad.py` | Expands a cropped cell tile to a fixed target size and pads it to a square (single-cell entry point). |
+| `batch_expand_and_pad.py` | Batch wrapper around `expand_and_pad.py`, processing all crops for a given slide/variant. |
+| `cell_expanding_and_padding/batch_expand_and_pad.sh` | PBS job wrapper for the batch expand-and-pad step. |
+| `pad.py` | Standalone padding utility (pad only, no expansion); used for the `padded` variant. |
+| `batch_pad.py` | Batch wrapper around `pad.py`, processing all crops for the `padded` variant. |
+| `cell_padding/` | Output or working directory for the padding-only variant crops. |
+
+### 3. Xenium (ST) Preprocessing
 | Script | Purpose |
 |---|---|
 | `xenium_pipeline_config.py` | Shared configuration (slide order, project name, variant paths). Imported by other scripts, not run directly. |
@@ -10,8 +33,7 @@
 | `xenium_realign_and_zscore_variant.py` | Re-filters/reorders Pearson targets to match a variant's actual surviving cells, re-z-scores using train-slide-only statistics, rebuilds the train/valid/test split. |
 | `build_symlinks_expanded_padded.sh` / `build_symlinks_padded.sh` | Symlinks variant-specific outputs into the DeepPT training directory structure. |
 
-### 2. Feature Compression and Model Training
-
+### 4. Feature Compression and Model Training
 | Script | Purpose |
 |---|---|
 | `vectorized_model_AE.py` | Vectorized autoencoder (2048→512 dims), replacing the original DeepPT `1main_AE.py`'s per-sample loop with batched tensor operations. |
@@ -22,8 +44,7 @@
 | `run_vectorized_deeppt_train.sh` | PBS array job wrapper for training (8 tasks: 2 folds × 4 gene batches), parameterized by `VARIANT`. |
 | `run_xenium_collect_features.sh` / `run_xenium_realign_and_zscore_variant.sh` / `run_xenium_two_slide_pipeline.sh` | PBS job wrappers for the corresponding Xenium preprocessing scripts. |
 
-### 3. Result Consolidation and Analysis
-
+### 5. Result Consolidation and Analysis
 | Script | Purpose |
 |---|---|
 | `print_all_coef_data_csv.py` | Consolidates all `coef_sorted_based_test.txt` result files (both variants, all folds/gene batches) into one `all_coef_data.csv`. |
